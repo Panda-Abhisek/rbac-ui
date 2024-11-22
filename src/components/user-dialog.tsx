@@ -7,11 +7,17 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+type Role = {
+  id: number
+  name: string
+  permissions: number[]
+}
+
 type User = {
   id: number
   name: string
   email: string
-  role: string
+  roleId: number | null
   status: "active" | "inactive"
 }
 
@@ -20,24 +26,25 @@ type UserDialogProps = {
   onClose: () => void
   onSave: (user: User) => void
   user: User | null
+  roles: Role[]
 }
 
-export function UserDialog({ isOpen, onClose, onSave, user }: UserDialogProps) {
+export function UserDialog({ isOpen, onClose, onSave, user, roles }: UserDialogProps) {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [role, setRole] = useState("")
+  const [roleId, setRoleId] = useState<number | null>(null)
   const [status, setStatus] = useState<"active" | "inactive">("active")
 
   useEffect(() => {
     if (user) {
       setName(user.name)
       setEmail(user.email)
-      setRole(user.role)
+      setRoleId(user.roleId)
       setStatus(user.status)
     } else {
       setName("")
       setEmail("")
-      setRole("")
+      setRoleId(null)
       setStatus("active")
     }
   }, [user])
@@ -47,7 +54,7 @@ export function UserDialog({ isOpen, onClose, onSave, user }: UserDialogProps) {
       id: user?.id ?? 0,
       name,
       email,
-      role,
+      roleId,
       status,
     })
   }
@@ -86,14 +93,20 @@ export function UserDialog({ isOpen, onClose, onSave, user }: UserDialogProps) {
             <Label htmlFor="role" className="text-right">
               Role
             </Label>
-            <Select value={role} onValueChange={setRole}>
+            <Select 
+              value={roleId ? roleId.toString() : ""} 
+              onValueChange={(value) => setRoleId(value ? Number(value) : null)}
+            >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Admin">Admin</SelectItem>
-                <SelectItem value="User">User</SelectItem>
-                <SelectItem value="Editor">Editor</SelectItem>
+                <SelectItem value="">No Role</SelectItem>
+                {roles.map((role) => (
+                  <SelectItem key={role.id} value={role.id.toString()}>
+                    {role.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

@@ -13,30 +13,47 @@ import {
 } from "@/components/ui/table"
 import { UserDialog } from "@/components/user-dialog"
 
+type Role = {
+  id: number
+  name: string
+  permissions: number[]
+}
+
 type User = {
   id: number
   name: string
   email: string
-  role: string
+  roleId: number | null
   status: "active" | "inactive"
 }
 
+const initialRoles: Role[] = [
+  { id: 1, name: "Admin", permissions: [1, 2, 3] },
+  { id: 2, name: "User", permissions: [1] },
+  { id: 3, name: "Editor", permissions: [1, 2] },
+]
+
 const initialUsers: User[] = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "active" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", status: "active" },
-  { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Editor", status: "inactive" },
+  { id: 1, name: "John Doe", email: "john@example.com", roleId: 1, status: "active" },
+  { id: 2, name: "Jane Smith", email: "jane@example.com", roleId: 2, status: "active" },
+  { id: 3, name: "Bob Johnson", email: "bob@example.com", roleId: 3, status: "inactive" },
 ]
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>(initialUsers)
+  const [roles, setRoles] = useState<Role[]>(initialRoles)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const savedUsers = localStorage.getItem('users')
+    const savedRoles = localStorage.getItem('roles')
     if (savedUsers) {
       setUsers(JSON.parse(savedUsers))
+    }
+    if (savedRoles) {
+      setRoles(JSON.parse(savedRoles))
     }
     setIsLoaded(true)
   }, [])
@@ -76,6 +93,11 @@ export default function UsersPage() {
     setIsDialogOpen(false)
   }
 
+  const getRoleName = (roleId: number | null) => {
+    if (roleId === null) return "No Role"
+    return roles.find(role => role.id === roleId)?.name || "Unknown"
+  }
+
   if (!isLoaded) {
     return <Layout><div>Loading...</div></Layout>
   }
@@ -101,7 +123,7 @@ export default function UsersPage() {
             <TableRow key={user.id}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
+              <TableCell>{getRoleName(user.roleId)}</TableCell>
               <TableCell>{user.status}</TableCell>
               <TableCell>
                 <Button variant="outline" className="mr-2" onClick={() => handleEditUser(user)}>
@@ -123,6 +145,7 @@ export default function UsersPage() {
         onClose={() => setIsDialogOpen(false)}
         onSave={handleSaveUser}
         user={editingUser}
+        roles={roles}
       />
     </Layout>
   )

@@ -7,10 +7,15 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 
+type Permission = {
+  id: number
+  name: string
+}
+
 type Role = {
   id: number
   name: string
-  permissions: string[]
+  permissions: number[]
 }
 
 type RoleDialogProps = {
@@ -18,21 +23,20 @@ type RoleDialogProps = {
   onClose: () => void
   onSave: (role: Role) => void
   role: Role | null
+  permissions: Permission[]
 }
 
-const availablePermissions = ["read", "write", "delete"]
-
-export function RoleDialog({ isOpen, onClose, onSave, role }: RoleDialogProps) {
+export function RoleDialog({ isOpen, onClose, onSave, role, permissions }: RoleDialogProps) {
   const [name, setName] = useState("")
-  const [permissions, setPermissions] = useState<string[]>([])
+  const [selectedPermissions, setSelectedPermissions] = useState<number[]>([])
 
   useEffect(() => {
     if (role) {
       setName(role.name)
-      setPermissions(role.permissions)
+      setSelectedPermissions(role.permissions)
     } else {
       setName("")
-      setPermissions([])
+      setSelectedPermissions([])
     }
   }, [role])
 
@@ -40,15 +44,15 @@ export function RoleDialog({ isOpen, onClose, onSave, role }: RoleDialogProps) {
     onSave({
       id: role?.id ?? 0,
       name,
-      permissions,
+      permissions: selectedPermissions,
     })
   }
 
-  const handlePermissionChange = (permission: string) => {
-    setPermissions(prev =>
-      prev.includes(permission)
-        ? prev.filter(p => p !== permission)
-        : [...prev, permission]
+  const handlePermissionChange = (permissionId: number) => {
+    setSelectedPermissions(prev =>
+      prev.includes(permissionId)
+        ? prev.filter(id => id !== permissionId)
+        : [...prev, permissionId]
     )
   }
 
@@ -73,18 +77,18 @@ export function RoleDialog({ isOpen, onClose, onSave, role }: RoleDialogProps) {
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">Permissions</Label>
             <div className="col-span-3">
-              {availablePermissions.map(permission => (
-                <div key={permission} className="flex items-center space-x-2">
+              {permissions.map(permission => (
+                <div key={permission.id} className="flex items-center space-x-2">
                   <Checkbox
-                    id={permission}
-                    checked={permissions.includes(permission)}
-                    onCheckedChange={() => handlePermissionChange(permission)}
+                    id={`permission-${permission.id}`}
+                    checked={selectedPermissions.includes(permission.id)}
+                    onCheckedChange={() => handlePermissionChange(permission.id)}
                   />
                   <label
-                    htmlFor={permission}
+                    htmlFor={`permission-${permission.id}`}
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    {permission}
+                    {permission.name}
                   </label>
                 </div>
               ))}

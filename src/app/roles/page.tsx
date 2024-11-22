@@ -13,32 +13,49 @@ import {
 } from "@/components/ui/table"
 import { RoleDialog } from "@/components/role-dialog"
 
+type Permission = {
+  id: number
+  name: string
+}
+
 type Role = {
   id: number
   name: string
-  permissions: string[]
+  permissions: number[] // Array of permission IDs
 }
 
+const initialPermissions: Permission[] = [
+  { id: 1, name: "Read" },
+  { id: 2, name: "Write" },
+  { id: 3, name: "Delete" },
+]
+
 const initialRoles: Role[] = [
-  { id: 1, name: "Admin", permissions: ["read", "write", "delete"] },
-  { id: 2, name: "User", permissions: ["read"] },
-  { id: 3, name: "Editor", permissions: ["read", "write"] },
+  { id: 1, name: "Admin", permissions: [1, 2, 3] },
+  { id: 2, name: "User", permissions: [1] },
+  { id: 3, name: "Editor", permissions: [1, 2] },
 ]
 
 export default function RolesPage() {
-  const [roles, setRoles] = useState<Role[]>(() => {
-    if (typeof window !== 'undefined') {
-      const savedRoles = localStorage.getItem('roles');
-      return savedRoles ? JSON.parse(savedRoles) : initialRoles;
-    }
-    return initialRoles;
-  })
+  const [roles, setRoles] = useState<Role[]>(initialRoles)
+  const [permissions] = useState<Permission[]>(initialPermissions)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingRole, setEditingRole] = useState<Role | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('roles', JSON.stringify(roles));
-  }, [roles]);
+    const savedRoles = localStorage.getItem('roles')
+    if (savedRoles) {
+      setRoles(JSON.parse(savedRoles))
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('roles', JSON.stringify(roles))
+    }
+  }, [roles, isLoaded])
 
   const handleAddRole = () => {
     setEditingRole(null)
@@ -63,6 +80,14 @@ export default function RolesPage() {
     setIsDialogOpen(false)
   }
 
+  const getPermissionNames = (permissionIds: number[]) => {
+    return permissionIds.map(id => permissions.find(p => p.id === id)?.name).join(", ")
+  }
+
+  if (!isLoaded) {
+    return <Layout><div>Loading...</div></Layout>
+  }
+
   return (
     <Layout>
       <div className="flex justify-between items-center mb-6">
@@ -81,7 +106,7 @@ export default function RolesPage() {
           {roles.map(role => (
             <TableRow key={role.id}>
               <TableCell>{role.name}</TableCell>
-              <TableCell>{role.permissions.join(", ")}</TableCell>
+              <TableCell>{getPermissionNames(role.permissions)}</TableCell>
               <TableCell>
                 <Button variant="outline" className="mr-2" onClick={() => handleEditRole(role)}>
                   Edit
@@ -99,6 +124,7 @@ export default function RolesPage() {
         onClose={() => setIsDialogOpen(false)}
         onSave={handleSaveRole}
         role={editingRole}
+        permissions={permissions}
       />
     </Layout>
   )
