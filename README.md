@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RBAC UI - Role-Based Access Control User Interface
 
-## Getting Started
+## Overview
 
-First, run the development server:
+RBAC UI is a React-based web application that provides a user-friendly interface for managing Role-Based Access Control (RBAC) in a system. It allows administrators to manage users, roles, and permissions efficiently.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- User Management
+  - View list of users
+  - Add new users
+  - Edit existing users
+  - Delete users
+  - Toggle user status (active/inactive)
+- Role Management
+  - View list of roles
+  - Add new roles
+  - Edit existing roles
+  - Delete roles
+  - Assign permissions to roles
+- Permissions Management
+  - View permissions matrix
+  - Assign/revoke permissions for roles
+- Responsive design with sidebar navigation
+- Clean and modern UI using Tailwind CSS and shadcn/ui components
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- React
+- Next.js
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
 
-## Learn More
+## Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js (v14 or later)
+- npm or yarn
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clone the repository:
+   \`\`\`
+   git clone https://github.com/your-username/rbac-ui.git
+   cd rbac-ui
+   \`\`\`
 
-## Deploy on Vercel
+2. Install dependencies:
+   \`\`\`
+   npm install
+   # or
+   yarn install
+   \`\`\`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Run the development server:
+   \`\`\`
+   npm run dev
+   # or
+   yarn dev
+   \`\`\`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Usage
+
+- Navigate through the sidebar to access different sections:
+  - Users: Manage user accounts
+  - Roles: Manage roles and their permissions
+  - Permissions: View and edit the permissions matrix
+
+## Project Structure
+
+- \`app/\`: Next.js app directory containing page components
+- \`components/\`: Reusable React components
+- \`public/\`: Static assets
+- \`styles/\`: Global styles
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+
+## TODO
+
+- Implement backend API integration
+- Add authentication and authorization
+- Implement search and filter functionality
+- Add form validation
+- Implement pagination for large datasets
+- Add error handling and loading states
+- Write unit and integration tests
+
