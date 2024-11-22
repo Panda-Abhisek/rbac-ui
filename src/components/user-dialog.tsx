@@ -94,14 +94,14 @@ export function UserDialog({ isOpen, onClose, onSave, user, roles }: UserDialogP
               Role
             </Label>
             <Select 
-              value={roleId ? roleId.toString() : ""} 
-              onValueChange={(value) => setRoleId(value ? Number(value) : null)}
+              value={roleId !== null ? roleId.toString() : "no-role"} 
+              onValueChange={(value) => setRoleId(value === "no-role" ? null : Number(value))}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No Role</SelectItem>
+                <SelectItem value="no-role">No Role</SelectItem>
                 {roles.map((role) => (
                   <SelectItem key={role.id} value={role.id.toString()}>
                     {role.name}
