@@ -28,19 +28,24 @@ const initialUsers: User[] = [
 ]
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>(() => {
-    if (typeof window !== 'undefined') {
-      const savedUsers = localStorage.getItem('users');
-      return savedUsers ? JSON.parse(savedUsers) : initialUsers;
-    }
-    return initialUsers;
-  })
+  const [users, setUsers] = useState<User[]>(initialUsers)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('users', JSON.stringify(users));
-  }, [users]);
+    const savedUsers = localStorage.getItem('users')
+    if (savedUsers) {
+      setUsers(JSON.parse(savedUsers))
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('users', JSON.stringify(users))
+    }
+  }, [users, isLoaded])
 
   const handleAddUser = () => {
     setEditingUser(null)
@@ -69,6 +74,10 @@ export default function UsersPage() {
       setUsers([...users, { ...user, id: users.length + 1 }])
     }
     setIsDialogOpen(false)
+  }
+
+  if (!isLoaded) {
+    return <Layout><div>Loading...</div></Layout>
   }
 
   return (

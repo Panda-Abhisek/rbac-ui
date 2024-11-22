@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Layout } from "@/components/layout"
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -52,17 +51,22 @@ const initialRolePermissions: RolePermission[] = [
 export default function PermissionsPage() {
   const [roles] = useState<Role[]>(initialRoles)
   const [permissions] = useState<Permission[]>(initialPermissions)
-  const [rolePermissions, setRolePermissions] = useState<RolePermission[]>(() => {
-    if (typeof window !== 'undefined') {
-      const savedRolePermissions = localStorage.getItem('rolePermissions');
-      return savedRolePermissions ? JSON.parse(savedRolePermissions) : initialRolePermissions;
-    }
-    return initialRolePermissions;
-  });
+  const [rolePermissions, setRolePermissions] = useState<RolePermission[]>(initialRolePermissions)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('rolePermissions', JSON.stringify(rolePermissions));
-  }, [rolePermissions]);
+    const savedRolePermissions = localStorage.getItem('rolePermissions')
+    if (savedRolePermissions) {
+      setRolePermissions(JSON.parse(savedRolePermissions))
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('rolePermissions', JSON.stringify(rolePermissions))
+    }
+  }, [rolePermissions, isLoaded])
 
   const handlePermissionChange = (roleId: number, permissionId: number) => {
     setRolePermissions(prev => {
@@ -77,6 +81,10 @@ export default function PermissionsPage() {
 
   const isChecked = (roleId: number, permissionId: number) => {
     return rolePermissions.some(rp => rp.roleId === roleId && rp.permissionId === permissionId)
+  }
+
+  if (!isLoaded) {
+    return <Layout><div>Loading...</div></Layout>
   }
 
   return (
