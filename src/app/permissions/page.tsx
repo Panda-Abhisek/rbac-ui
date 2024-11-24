@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Layout } from "@/components/layout"
 import {
   Table,
@@ -11,80 +10,28 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
-
-type Role = {
-  id: number
-  name: string
-}
-
-type Permission = {
-  id: number
-  name: string
-}
-
-type RolePermission = {
-  roleId: number
-  permissionId: number
-}
-
-const initialRoles: Role[] = [
-  { id: 1, name: "Admin" },
-  { id: 2, name: "User" },
-  { id: 3, name: "Editor" },
-]
-
-const initialPermissions: Permission[] = [
-  { id: 1, name: "Read" },
-  { id: 2, name: "Write" },
-  { id: 3, name: "Delete" },
-]
-
-const initialRolePermissions: RolePermission[] = [
-  { roleId: 1, permissionId: 1 },
-  { roleId: 1, permissionId: 2 },
-  { roleId: 1, permissionId: 3 },
-  { roleId: 2, permissionId: 1 },
-  { roleId: 3, permissionId: 1 },
-  { roleId: 3, permissionId: 2 },
-]
+import { useRbac } from "@/contexts/RbacContext"
 
 export default function PermissionsPage() {
-  const [roles] = useState<Role[]>(initialRoles)
-  const [permissions] = useState<Permission[]>(initialPermissions)
-  const [rolePermissions, setRolePermissions] = useState<RolePermission[]>(initialRolePermissions)
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  useEffect(() => {
-    const savedRolePermissions = localStorage.getItem('rolePermissions')
-    if (savedRolePermissions) {
-      setRolePermissions(JSON.parse(savedRolePermissions))
-    }
-    setIsLoaded(true)
-  }, [])
-
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('rolePermissions', JSON.stringify(rolePermissions))
-    }
-  }, [rolePermissions, isLoaded])
+  const { roles, setRoles, permissions } = useRbac()
 
   const handlePermissionChange = (roleId: number, permissionId: number) => {
-    setRolePermissions(prev => {
-      const exists = prev.some(rp => rp.roleId === roleId && rp.permissionId === permissionId)
-      if (exists) {
-        return prev.filter(rp => !(rp.roleId === roleId && rp.permissionId === permissionId))
-      } else {
-        return [...prev, { roleId, permissionId }]
-      }
-    })
+    setRoles(prevRoles => 
+      prevRoles.map(role => {
+        if (role.id === roleId) {
+          const updatedPermissions = role.permissions.includes(permissionId)
+            ? role.permissions.filter(id => id !== permissionId)
+            : [...role.permissions, permissionId]
+          return { ...role, permissions: updatedPermissions }
+        }
+        return role
+      })
+    )
   }
 
   const isChecked = (roleId: number, permissionId: number) => {
-    return rolePermissions.some(rp => rp.roleId === roleId && rp.permissionId === permissionId)
-  }
-
-  if (!isLoaded) {
-    return <Layout><div>Loading...</div></Layout>
+    const role = roles.find(r => r.id === roleId)
+    return role ? role.permissions.includes(permissionId) : false
   }
 
   return (
