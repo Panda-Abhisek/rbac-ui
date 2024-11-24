@@ -89,13 +89,3 @@ This project is licensed under the MIT License.
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 
-## TODO
-
-- Implement backend API integration
-- Add authentication and authorization
-- Implement search and filter functionality
-- Add form validation
-- Implement pagination for large datasets
-- Add error handling and loading states
-- Write unit and integration tests
-
