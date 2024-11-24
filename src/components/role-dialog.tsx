@@ -6,17 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-type Permission = {
-  id: number
-  name: string
-}
-
-type Role = {
-  id: number
-  name: string
-  permissions: number[]
-}
+import { Role, Permission } from "@/contexts/RbacContext"
 
 type RoleDialogProps = {
   isOpen: boolean
