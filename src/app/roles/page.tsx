@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Layout } from "@/components/layout"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,50 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { RoleDialog } from "@/components/role-dialog"
-
-type Permission = {
-  id: number
-  name: string
-}
-
-type Role = {
-  id: number
-  name: string
-  permissions: number[] // Array of permission IDs
-}
-
-const initialPermissions: Permission[] = [
-  { id: 1, name: "Read" },
-  { id: 2, name: "Write" },
-  { id: 3, name: "Delete" },
-]
-
-const initialRoles: Role[] = [
-  { id: 1, name: "Admin", permissions: [1, 2, 3] },
-  { id: 2, name: "User", permissions: [1] },
-  { id: 3, name: "Editor", permissions: [1, 2] },
-]
+import { useRbac, Role, Permission } from "@/contexts/RbacContext"
 
 export default function RolesPage() {
-  const [roles, setRoles] = useState<Role[]>(initialRoles)
-  const [permissions] = useState<Permission[]>(initialPermissions)
+  const { roles, setRoles, permissions } = useRbac()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingRole, setEditingRole] = useState<Role | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  useEffect(() => {
-    const savedRoles = localStorage.getItem('roles')
-    if (savedRoles) {
-      setRoles(JSON.parse(savedRoles))
-    }
-    setIsLoaded(true)
-  }, [])
-
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('roles', JSON.stringify(roles))
-    }
-  }, [roles, isLoaded])
 
   const handleAddRole = () => {
     setEditingRole(null)
@@ -71,21 +33,19 @@ export default function RolesPage() {
     setRoles(roles.filter(role => role.id !== roleId))
   }
 
-  const handleSaveRole = (role: Role) => {
-    if (editingRole) {
-      setRoles(roles.map(r => r.id === role.id ? role : r))
-    } else {
-      setRoles([...roles, { ...role, id: roles.length + 1 }])
-    }
+  const handleSaveRole = (updatedRole: Role) => {
+    setRoles(prevRoles => {
+      if (updatedRole.id) {
+        return prevRoles.map(role => role.id === updatedRole.id ? updatedRole : role)
+      } else {
+        return [...prevRoles, { ...updatedRole, id: Math.max(...prevRoles.map(r => r.id)) + 1 }]
+      }
+    })
     setIsDialogOpen(false)
   }
 
   const getPermissionNames = (permissionIds: number[]) => {
-    return permissionIds.map(id => permissions.find(p => p.id === id)?.name).join(", ")
-  }
-
-  if (!isLoaded) {
-    return <Layout><div>Loading...</div></Layout>
+    return permissionIds.map(id => permissions.find(p => p.id === id)?.name).filter(Boolean).join(", ")
   }
 
   return (
