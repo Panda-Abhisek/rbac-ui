@@ -50,7 +50,7 @@ export default function RolesPage() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 mt-8">
         <h1 className="text-3xl font-bold">Roles</h1>
         <Button onClick={handleAddRole}>Add Role</Button>
       </div>

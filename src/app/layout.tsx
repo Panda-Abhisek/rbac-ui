@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <RbacProvider>
-          <main className="flex-1 overflow-y-auto mt-7">
+          <main className="flex-1 overflow-y-auto">
             {children}
           </main>
         </RbacProvider>

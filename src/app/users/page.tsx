@@ -104,7 +104,7 @@ export default function UsersPage() {
 
   return (
     <Layout>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 mt-8">
         <h1 className="text-3xl font-bold">Users</h1>
         <Button onClick={handleAddUser}>Add User</Button>
       </div>

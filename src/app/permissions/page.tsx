@@ -36,7 +36,7 @@ export default function PermissionsPage() {
 
   return (
     <Layout>
-      <h1 className="text-3xl font-bold mb-6">Permissions Matrix</h1>
+      <h1 className="text-3xl font-bold mb-6 mt-8">Permissions Matrix</h1>
       <Table>
         <TableHeader>
           <TableRow>
