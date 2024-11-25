@@ -32,19 +32,19 @@ type UserDialogProps = {
 export function UserDialog({ isOpen, onClose, onSave, user, roles }: UserDialogProps) {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
-  const [roleId, setRoleId] = useState<number | null>(null)
+  const [roleId, setRoleId] = useState<string>("no-role")
   const [status, setStatus] = useState<"active" | "inactive">("active")
 
   useEffect(() => {
     if (user) {
       setName(user.name)
       setEmail(user.email)
-      setRoleId(user.roleId)
+      setRoleId(user?.roleId === null ? "no-role" : user?.roleId?.toString() ?? "no-role")
       setStatus(user.status)
     } else {
       setName("")
       setEmail("")
-      setRoleId(null)
+      setRoleId("no-role")
       setStatus("active")
     }
   }, [user])
@@ -54,7 +54,7 @@ export function UserDialog({ isOpen, onClose, onSave, user, roles }: UserDialogP
       id: user?.id ?? 0,
       name,
       email,
-      roleId,
+      roleId: roleId === "no-role" ? null : Number(roleId),
       status,
     })
   }
@@ -94,8 +94,8 @@ export function UserDialog({ isOpen, onClose, onSave, user, roles }: UserDialogP
               Role
             </Label>
             <Select 
-              value={roleId !== null ? roleId.toString() : "no-role"} 
-              onValueChange={(value) => setRoleId(value === "no-role" ? null : Number(value))}
+              value={roleId} 
+              onValueChange={(value) => setRoleId(value)}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select a role" />
