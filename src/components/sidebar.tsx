@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Users, UserCircle, Shield, Menu, X } from 'lucide-react'
+import { Users, UserCircle, Shield, Menu, X, House } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 
 export function Sidebar() {
@@ -11,6 +11,7 @@ export function Sidebar() {
   const toggleSidebar = () => setIsOpen(!isOpen)
 
   const menuItems = [
+    { href: "/", icon: House, label: "Welcome"},
     { href: "/users", icon: Users, label: "Users" },
     { href: "/roles", icon: UserCircle, label: "Roles" },
     { href: "/permissions", icon: Shield, label: "Permissions" },
