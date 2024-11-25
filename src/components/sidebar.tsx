@@ -35,7 +35,7 @@ export function Sidebar() {
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:static md:inset-auto md:w-64
       `}>
-        <div className="p-4">
+        <div className="p-4 mt-12">
           <h1 className="text-2xl font-bold">RBAC Admin</h1>
         </div>
         <nav className="mt-8">
