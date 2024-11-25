@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Layout } from "@/components/layout"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -102,7 +103,7 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="p-8">
+    <Layout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Users</h1>
         <Button onClick={handleAddUser}>Add User</Button>
@@ -146,7 +147,7 @@ export default function UsersPage() {
         user={editingUser}
         roles={roles}
       />
-    </div>
+    </Layout>
   )
 }
 

@@ -20,12 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <RbacProvider>
-          <div className="flex h-screen">
-            {/* <Navigation /> */}
-            <main className="flex-1 overflow-y-auto">
-              {children}
-            </main>
-          </div>
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
         </RbacProvider>
       </body>
     </html>
